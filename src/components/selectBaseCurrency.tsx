@@ -1,6 +1,14 @@
 import currencies from '../utils/currencies';
 
-export default function SelectBaseCurrency() {
+export default function SelectBaseCurrency(
+  {
+    baseCurrency,
+    changeBaseCurrency,
+  }: {
+    baseCurrency: String,
+    changeBaseCurrency: Function,
+  }
+) {
   return (
     <div>
       <label htmlFor="baseCurrency" className="block text-sm font-medium text-gray-700">
@@ -25,6 +33,7 @@ export default function SelectBaseCurrency() {
             id="currency"
             name="currency"
             className="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            onChange={(e) => changeBaseCurrency(e.target.value)}
           >
             {Object.keys(currencies).map((currency) => (
               <option key={currency}>{currency}</option>
