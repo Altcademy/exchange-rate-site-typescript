@@ -35,6 +35,10 @@ class App extends React.Component<AppProps, AppStates> {
     }
   }
 
+  componentDidMount() {
+    this.changeBaseCurrency(this.state.baseCurrency);
+  }
+
   render() {
     return (
       <div className="App">
@@ -58,7 +62,7 @@ class App extends React.Component<AppProps, AppStates> {
           </form>
         </main>
 
-        <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8" hidden={this.state.rates.length === 0}>
           <RatesTable
             baseCurrency={this.state.baseCurrency}
             rates={this.state.rates}

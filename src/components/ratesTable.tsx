@@ -27,7 +27,7 @@ export default function RatesTable(
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-middle text-sm font-semibold text-gray-900"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
                       Rate
                     </th>
@@ -37,7 +37,7 @@ export default function RatesTable(
                   {rates.map((rate, index) => (
                     <tr key={index}>
                       <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{rate.currency}</td>
-                      <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{`1 ${baseCurrency} : ${rate.rate} ${rate.currency}`}</td>
+                      <td className="whitespace-nowrap px-2 py-2 text-left text-sm text-gray-500">{`1 ${baseCurrency} : ${rate.rate} ${rate.currency}`}</td>
                     </tr>
                   ))}
                 </tbody>
