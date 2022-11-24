@@ -1,4 +1,15 @@
-# Getting Started with Create React App
+# Currency React App in TypeScript
+
+## Features
+1. All exchange rates of a base currency selected by the user
+2. A graph to show the currency's exchange rate against another currency over a period of time
+
+## Tech
+- React
+- TypeScript
+- [money.js](https://openexchangerates.github.io/money.js/)
+
+## Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
