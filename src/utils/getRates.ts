@@ -2,8 +2,9 @@ import currencies from './currencies';
 import { checkStatus, json } from './fetchUtils';
 
 export type Rates = {
-  currency: String;
-  rate: Number;
+  currency: string;
+  rate: number;
+  total?: number;
 }[];
 
 export default async function getRates(baseCurrency: string): Promise<Rates | void> {
