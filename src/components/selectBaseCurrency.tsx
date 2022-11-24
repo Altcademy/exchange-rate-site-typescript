@@ -21,7 +21,7 @@ export default function SelectBaseCurrency(
           <span className="text-gray-500 sm:text-sm">$</span>
         </div>
         <input
-          type="number"
+          type="text"
           name="price"
           id="price"
           className="block w-full rounded-md border-gray-300 pl-7 pr-20 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"

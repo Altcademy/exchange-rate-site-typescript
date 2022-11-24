@@ -39,7 +39,7 @@ export default function RatesTable(
                   {rates.map((rate, index) => (
                     <tr key={index}>
                       <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{rate.currency}</td>
-                      <td className="whitespace-nowrap px-2 py-2 text-left text-sm text-gray-500">{`${baseValue} ${baseCurrency} : ${rate.total} ${rate.currency}`}</td>
+                      <td className="whitespace-nowrap px-2 py-2 text-left text-sm text-gray-500">{`${baseValue} ${baseCurrency} : ${rate.total?.toFixed(2)} ${rate.currency}`}</td>
                     </tr>
                   ))}
                 </tbody>

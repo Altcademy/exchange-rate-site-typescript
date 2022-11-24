@@ -22,7 +22,7 @@ class App extends React.Component<AppProps, AppStates> {
 
     this.state = {
       baseCurrency: 'USD',
-      baseValue: 100,
+      baseValue: 1,
       rates: [],
     }
   }
@@ -31,18 +31,14 @@ class App extends React.Component<AppProps, AppStates> {
     this.setState({ 
       baseCurrency,
       rates: []
-    });
-
-    this.refreshRates();
+    }, this.refreshRates)
   }
 
   changeBaseValue = (baseValue: number) => {
     this.setState({
-      baseValue,
+      baseValue: Number(baseValue),
       rates: []
-    });
-
-    this.refreshRates();
+    }, this.refreshRates)
   }
 
   refreshRates = async() => {
