@@ -1,22 +1,38 @@
 import './App.css';
+import { checkStatus, json } from './utils/fetchUtils';
+import getRates from './utils/getRates';
+import type { Rates } from './utils/getRates';
 import classNames from './utils/classNames'
+import RatesTable from './components/ratesTable';
 import SelectBaseCurrency from './components/selectBaseCurrency';
 import Navbar from './components/navbar';
 import React from 'react';
 
-class App extends React.Component<any, any> {
+type AppProps = {};
+
+type AppStates = {
+  baseCurrency: string,
+  rates: Rates,
+};
+
+class App extends React.Component<AppProps, AppStates> {
   constructor(props: any) {
     super(props);
 
     this.state = {
       baseCurrency: 'USD',
+      rates: []
     }
   }
 
-  changeBaseCurrency = (baseCurrency: string) => {
-    console.log("Changing base currency to", baseCurrency);
-
+  changeBaseCurrency = async(baseCurrency: string) => {
     this.setState({ baseCurrency });
+
+    const rates = await getRates(baseCurrency);
+
+    if (rates) {
+      this.setState({ rates })
+    }
   }
 
   render() {
@@ -40,6 +56,13 @@ class App extends React.Component<any, any> {
               />
             </div>
           </form>
+        </main>
+
+        <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <RatesTable
+            baseCurrency={this.state.baseCurrency}
+            rates={this.state.rates}
+          />
         </main>
       </div>
     );
