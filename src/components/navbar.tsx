@@ -11,7 +11,7 @@ export default function Navbar() {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <p className="text-white">Currency Exchange Rates</p>
+                  <p className="text-white">Exchange Rates React App in TypeScript</p>
                 </div>
               </div>
             </div>
