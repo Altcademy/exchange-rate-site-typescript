@@ -1,17 +1,5 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
+import currencies from '../utils/currencies';
+
 export default function SelectBaseCurrency() {
   return (
     <div>
@@ -38,9 +26,9 @@ export default function SelectBaseCurrency() {
             name="currency"
             className="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           >
-            <option>USD</option>
-            <option>CAD</option>
-            <option>EUR</option>
+            {Object.keys(currencies).map((currency) => (
+              <option key={currency}>{currency}</option>
+            ))}
           </select>
         </div>
       </div>
