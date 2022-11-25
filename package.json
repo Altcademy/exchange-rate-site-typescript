@@ -1,5 +1,6 @@
 {
   "name": "exchange-rate-site-typescript",
+  "homepage": "https://altcademy.github.io/exchange-rate-site-typescript",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
