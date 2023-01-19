@@ -1,18 +1,26 @@
 import './App.css';
-import { checkStatus, json } from './utils/fetchUtils';
 import getRates from './utils/getRates';
+import getCurrencies from './utils/getCurrencies';
 import type { Rates } from './utils/getRates';
-import classNames from './utils/classNames'
+import type { Currencies } from './utils/currencies';
+import { returnNegativeWeightPath } from './utils/bellmanFord';
+import type { AdjacencyList } from './utils/bellmanFord';
 import RatesTable from './components/ratesTable';
 import SelectBaseCurrency from './components/selectBaseCurrency';
+import { sampleSize } from 'lodash';
 import Navbar from './components/navbar';
 import React from 'react';
+import AlertBanner from './components/alertBanner';
 
 type AppProps = {};
 
 type AppStates = {
+  adjacencyList: AdjacencyList,
+  arbitrage: string,
   baseCurrency: string,
   baseValue: number,
+  currencies: Currencies,
+  loadingArbitrage: boolean,
   rates: Rates,
 };
 
@@ -21,8 +29,12 @@ class App extends React.Component<AppProps, AppStates> {
     super(props);
 
     this.state = {
+      adjacencyList: {},
+      arbitrage: 'Loading currencies...',
       baseCurrency: 'USD',
       baseValue: 1,
+      currencies: {},
+      loadingArbitrage: true,
       rates: [],
     }
   }
@@ -31,7 +43,10 @@ class App extends React.Component<AppProps, AppStates> {
     this.setState({ 
       baseCurrency,
       rates: []
-    }, this.refreshRates)
+    }, () => {
+      this.refreshRates();
+      this.findArbitrageOpportunity();
+    })
   }
 
   changeBaseValue = (baseValue: number) => {
@@ -52,12 +67,57 @@ class App extends React.Component<AppProps, AppStates> {
         }
       });
 
-      this.setState({ rates })
+      this.setState({ rates });
+    }
+  }
+
+  buildAdjacencyList = async(): Promise<void> => {
+    const newAdjacencyList: {
+      [key: string]: [string, number][]
+    } = {}
+    const { currencies } = this.state;
+    // for (const currency of sampleSize(Object.keys(currencies), 20)) {
+    for (const currency of Object.keys(currencies)) {
+      newAdjacencyList[currency] = [];
+      let rates = await getRates(currency);
+      if (rates) {
+        for (const rate of rates) {
+          newAdjacencyList[currency].push([rate.currency, rate.rate]);
+        }
+      }
+      this.setState({ arbitrage: `Loading currencies... (${Object.keys(newAdjacencyList).length} currencies loaded)` });
+    }
+    
+    const { adjacencyList } = this.state;
+    if (Object.keys(adjacencyList).length === 0) {
+      return new Promise(resolve => this.setState({ adjacencyList: newAdjacencyList }, resolve));
+    }
+  }
+
+  findArbitrageOpportunity = async() => {
+    await this.buildAdjacencyList();
+    const { adjacencyList, baseCurrency } = this.state;
+
+    const negativeWeightPath = returnNegativeWeightPath(adjacencyList, baseCurrency);
+
+    if (negativeWeightPath && negativeWeightPath.gain > 1) {
+      this.setState({ arbitrage: [baseCurrency, ...negativeWeightPath.path].join(' -> ') + ' (Gain: ' + ((negativeWeightPath.gain-1)*100).toFixed(6) + '%)' });
+    } else {
+      this.setState({ arbitrage: 'No arbitrage opportunity found' });
+    }
+  }
+
+  setCurrencies = async(success: () => void) => {
+    const currencies = await getCurrencies();
+    if (currencies) {
+      return this.setState({ currencies }, success);
     }
   }
 
   componentDidMount() {
-    this.changeBaseCurrency(this.state.baseCurrency);
+    this.setCurrencies(() => {
+      this.changeBaseCurrency(this.state.baseCurrency);
+    })
   }
 
   render() {
@@ -65,7 +125,7 @@ class App extends React.Component<AppProps, AppStates> {
       <div className="App">
         <Navbar />
 
-        <main className="mx-auto max-w-lg px-4 pt-10 pb-12 lg:pb-16">
+        <main className="mx-auto max-w-lg px-2 py-4">
           <form>
             <div className="space-y-6">
               <div>
@@ -76,15 +136,21 @@ class App extends React.Component<AppProps, AppStates> {
               </div>
 
               <SelectBaseCurrency 
+                baseCurrency={this.state.baseCurrency}
                 baseValue={this.state.baseValue}
                 changeBaseCurrency={this.changeBaseCurrency}
                 changeBaseValue={this.changeBaseValue}
+                currencies={this.state.currencies}
               />
             </div>
           </form>
         </main>
 
-        <main className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8" hidden={this.state.rates.length === 0}>
+        <main className="mx-auto max-w-lg px-2 py-4">
+          <AlertBanner arbitrage={this.state.arbitrage} />
+        </main>
+
+        <main className="mx-auto max-w-xl px-2 py-4" hidden={this.state.rates.length === 0}>
           <RatesTable
             baseCurrency={this.state.baseCurrency}
             baseValue={this.state.baseValue}

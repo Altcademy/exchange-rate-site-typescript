@@ -1,14 +1,18 @@
-import currencies from '../utils/currencies';
+import type { Currencies } from '../utils/currencies';
 
 export default function SelectBaseCurrency(
   {
+    baseCurrency,
     baseValue,
     changeBaseCurrency,
     changeBaseValue,
+    currencies,
   }: {
+    baseCurrency: string,
     baseValue: number,
     changeBaseCurrency: Function,
     changeBaseValue: Function,
+    currencies: Currencies,
   }
 ) {
   return (
@@ -37,7 +41,7 @@ export default function SelectBaseCurrency(
             id="currency"
             name="currency"
             className="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            defaultValue={'USD'}
+            value={baseCurrency}
             onChange={(e) => changeBaseCurrency(e.target.value)}
           >
             {Object.keys(currencies).map((currency) => (

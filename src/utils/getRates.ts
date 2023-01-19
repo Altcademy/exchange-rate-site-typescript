@@ -1,4 +1,3 @@
-import currencies from './currencies';
 import { checkStatus, json } from './fetchUtils';
 
 export type Rates = {
